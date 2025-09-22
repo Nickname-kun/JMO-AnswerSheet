@@ -1,0 +1,86 @@
+\usepackage{amsmath,mathtools,amssymb,amsthm,}%数式環境
+\usepackage{ulem}%下線
+\usepackage{cancel}
+\usepackage{caption}
+\usepackage{tcolorbox}%凝った箱囲み
+\tcbuselibrary{raster,skins}
+\usepackage{bm}%数式の太字
+\usepackage[inline]{enumitem}%enumerate環境のカスタマイズ
+\usepackage{varwidth}%箱囲み環境に必要
+\usepackage{environ}%環境定義に利用
+\usepackage{tikzsymbols}%マーク
+\usepackage{multirow}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+
+
+\NewEnviron{waku}{\setlength{\fboxsep}{2mm}\fbox{\begin{varwidth}{\linewidth}\BODY\end{varwidth}}}%シンプルな箱囲み環境
+
+\newcommand{\term}[1]{{\sffamily #1}}%太字を統一
+
+\newcommand{\C}[2]{{}_{#1}\mathrm{C}_{#2}}%二項係数を楽に記述
+
+\DeclarePairedDelimiter{\kakko}{\lparen}{\rparen}%普通の括弧()　\kakko*{括弧の中身}とするとかっこの大きさが自動調節される。下記の中括弧、大括弧、絶対値記号も同様
+
+\DeclarePairedDelimiter{\tyuukakko}{\lbrace}{\rbrace}%中括弧{}
+
+\DeclarePairedDelimiter{\daikakko}{\lbrack}{\rbrack}%大括弧[]
+
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}%絶対値記号||
+
+\renewcommand{\vector}[1]{\vv{\mathrm{#1}}}%ベクトルの矢印の再定義
+
+\newcommand{\空行}{\vskip\baselineskip}%\空行で一行空ける
+
+\newcommand{\半行}{\vskip.5\baselineskip}%\半行で半行空ける
+
+\newcommand{\中行}{\vskip.8\baselineskip}%半行より大きめ
+
+\newcommand{\細行}{\vskip.3\baselineskip}%本当にちょっとの空行
+
+\renewcommand{\arraystretch}{1.2}%tabularで使う
+
+\newcommand{\bhline}{\noalign{\hrule height 1.5pt}}%tabularで使う
+
+\newcommand{\Add}[1]{\textcolor{red}{#1}}%加筆
+
+\newcommand{\Erase}[1]{\sout{\textcolor{black}{#1}}}%訂正
+
+\newcommand{\parallelj}{/\!/}
+
+\newcommand{\kai}
+{\noindent
+\begin{tikzpicture}[scale=0.2, baseline=2.8pt]
+\draw (3.3,1) node{\large\textgt{解 答}};
+\draw[thick, rounded corners=3pt,] (0,0)--(6.5,0)--(6.5,2.2)--(0,2.2)--cycle;
+\end{tikzpicture}\;}%解のロゴ
+
+\newcommand{\shomei}
+{\noindent
+\begin{tikzpicture}[scale=0.2, baseline=2.8pt]
+\draw (3.3,1) node{\textgt{証 明}};
+\draw[double,thick,rounded corners=3pt,] (0,0)--(6.5,0)--(6.5,2.2)--(0,2.2)--cycle;
+\end{tikzpicture}\;}%証明のロゴ
+
+\newcommand{\hosoku}{\noindent
+\begin{tikzpicture}[scale=0.2, baseline=2.8pt]
+\draw (6,1) node{\large\textgt{補足}};
+\fill (0,1)--(1,0)--(2,1)--(1,2)--cycle;
+\fill[gray] (1,1)--(2,0)--(3,1)--(2,2)--cycle;
+\fill (2,1)--(3,0)--(4,1)--(3,2)--cycle;
+\fill (10,1)--(11,0)--(12,1)--(11,2)--cycle;
+\fill[gray] (9,1)--(10,0)--(11,1)--(10,2)--cycle;
+\fill (8,1)--(9,0)--(10,1)--(9,2)--cycle;
+\end{tikzpicture}\;}%補足のロゴ
+
+\newcommand{\chui}{\noindent
+\begin{tikzpicture}[scale=0.2, baseline=2.8pt]
+\fill (0,0)--(6.5,0)--(6.5,2.2)--(0,2.2);
+\draw (3.3,1) node[white]{\large\textgt{注意！}};
+\draw[thick] (0,0)--(6.5,0)--(6.5,2.2)--(0,2.2)--cycle;
+\end{tikzpicture}\;}%注意のロゴ
+
+\newcommand{\touhen}[2]{\draw [line width=0.25pt] ($(#1)!0.5!(#2)!1pt!(#1)!2pt!90:(#1)$) -- ($(#1)!0.5!(#2)!1pt!(#1)!2pt!90:(#2)$) ($(#1)!0.5!(#2)!1pt!(#2)!2pt!90:(#1)$) -- ($(#1)!0.5!(#2)!1pt!(#2)!2pt!90:(#2)$);}
+
+\newcommand{\heikou}[2]{\draw [line width=0.25pt] ($(#1)!0.5!(#2)!3.5pt!145:(#2)$) -- ($(#1)!0.5!(#2)$) -- ($(#1)!0.5!(#2)!3.5pt!-145:(#2)$);}
+
