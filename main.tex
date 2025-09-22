@@ -1,0 +1,162 @@
+\documentclass{jlreq}
+\special{papersize=\the\paperwidth,\the\paperheight}
+\usepackage{luatexja}
+\usepackage[no-math,deluxe,expert,haranoaji]{luatexja-preset}
+\usepackage{fontspec}
+\usepackage[bottom=28mm,top=40mm,left=6\zw,right=6\zw]{geometry}
+\usepackage{graphicx}
+\usepackage{framed}
+\usepackage{tikz}
+\usetikzlibrary{patterns,calc}
+\usepackage[colorlinks=true,linkcolor=black,urlcolor=blue]{hyperref}
+\usepackage{xcolor}
+\usepackage{mymacro}
+\everymath{\displaystyle}
+\pagestyle{empty}
+
+\begin{document}
+\begin{tabular}{lr}
+\begin{minipage}[b]{0.5\linewidth}
+\centering
+{\large 第34回日本数学オリンピック予選}
+\vskip1.5\zw
+{\large \textgt{解答用紙}}
+\vspace{0.9cm}
+\end{minipage}
+\begin{minipage}[b]{0.47\linewidth}
+\vspace{0pt}
+  \centering
+  % ----- 右上の受験番号・氏名欄 (調整可能) -----
+  \begin{tikzpicture}[x=1mm,y=1mm]
+    % パラメータ（必要に応じて変更）
+    \def\numDigits{5}      % 受験番号の桁数（小マス数）
+    \def\digitW{8}        % 小マスの幅 (mm)
+    \def\digitH{11}       % 小マスの高さ (mm)
+    \def\nameW{25}        % 氏名欄の幅 (mm)
+    \def\nameH{17}        % 氏名欄の高さ (mm)
+    \def\gap{0}           % 受験番号群と外枠との左右余白
+    \def\outerLW{1.6}     % 外枠の線幅 (pt 相当)
+    \def\innerLW{0.6}     % 内部罫線の線幅
+
+    % 全体幅・高さ
+    \pgfmathsetmacro{\digitsTotalW}{\numDigits*\digitW}
+    \pgfmathsetmacro{\totalW}{\nameW + \gap + \digitsTotalW + \gap}
+    \pgfmathsetmacro{\totalH}{\nameH + \digitH} % 上に数字欄、下に氏名欄
+    % 外枠
+    \draw[line width=\outerLW pt] (0,0) rectangle (\totalW,-\totalH);
+
+    % 上段：受験番号エリア（右寄せの小箱群）
+    % 右内側に寄せる計算（外枠の右端から gap をあけて右寄せ）
+    \pgfmathsetmacro{\dx}{\totalW - \gap - \digitsTotalW}
+    \foreach \i in {0,...,\numexpr\numDigits-1\relax}{
+      \pgfmathsetmacro{\x}{\dx + \i*\digitW}
+      \draw[line width=\innerLW pt] (\x,0) rectangle ++(\digitW,-\digitH);
+    }
+    % 「受験番号」ラベル（上段、左寄せ）
+    \node[anchor=west,font=\large] at (2.5,-0.5*\digitH) {受験番号};
+
+    % 下段：氏名欄（外枠の左側を占める）
+    \draw[line width=\innerLW pt] (0,-\digitH) rectangle (\nameW,-\digitH-\nameH);
+    % 氏名ラベル（左上）
+    \node[anchor=west,font=\large] at (6,-\nameH-2.5) {氏名};
+
+    % 氏名欄と数字欄の仕切り（垂直線）-- 必要なら太さを変える
+    \draw[line width=\outerLW pt] (0,-\digitH) -- (\totalW,-\digitH);
+  \end{tikzpicture}
+  \vspace{0.3cm}
+\end{minipage}
+\end{tabular}
+\centering
+\begin{tikzpicture}[x=1mm,y=1mm]
+  % ----- パラメータ（必要なら数値を変えて微調整） -----
+  \def\cellW{52}     % 各セル幅（mm）
+  \def\cellH{30}     % 各セル高さ（mm）
+  \def\headH{8}      % ヘッダ帯高さ（mm）
+  \def\rowGap{8}     % 行間（mm）
+  \def\leftX{10}     % 左余白（mm）
+  \def\topY{10}      % 上余白（mm）
+  \def\outerLW{1.6}  % 外枠・仕切り太さ（pt相当の見た目）※描画は数値で指定せずline widthで
+  \def\innerLW{0.6}  % ヘッダ線の細さ
+
+  \pgfmathsetmacro{\totalW}{3*\cellW} % 総幅(mm)
+
+  % ----- 各行の外枠と縦仕切り、ヘッダ下の細線を描画 -----
+  \foreach \r in {0,1,2,3}{
+    % 上端の y 座標（mm単位）
+    \pgfmathsetmacro{\y}{\topY + \r*(\cellH + \rowGap)}
+    % 外枠（太線）
+    \draw[line width=\outerLW pt] (\leftX,-\y) rectangle ++(\totalW,-\cellH);
+    % 縦仕切り（太線）
+    \foreach \c in {1,2}{
+      \pgfmathsetmacro{\x}{\leftX + \c*\cellW}
+      \draw[line width=\outerLW pt] (\x,-\y) -- ++(0,-\cellH);
+    }
+    % ヘッダ下境界（細線）: 各セルごと
+    \foreach \c in {0,1,2}{
+      \pgfmathsetmacro{\x}{\leftX + \c*\cellW}
+      \pgfmathsetmacro{\yline}{\y + \headH}
+      \draw[line width=\innerLW pt] (\x,-\yline) -- ++(\cellW,0);
+    }
+  }
+  % ----- マクロ：セルに問番号と解答を配置 -----
+  \newcommand{\placeCell}[4]{%
+    % #1 col(1..3), #2 row(1..4), #3 qno, #4 content
+    \pgfmathsetmacro{\px}{\leftX + (#1-1)*\cellW} % 左端 x(mm)
+    \pgfmathsetmacro{\py}{\topY + (#2-1)*( \cellH + \rowGap)} % 上端 y(mm)
+    % ヘッダ中央（y）
+    \pgfmathsetmacro{\hy}{\py + 0.5*\headH}
+    % 本文中央（ヘッダ含めた中央）
+    \pgfmathsetmacro{\cy}{\py + 0.5*(\headH + \cellH)}
+    % 中央 x
+    \pgfmathsetmacro{\cx}{\px + 0.5*\cellW}
+    % 問番号（ヘッダ内中央）
+    \node[font=\Large] at (\cx, -\hy) {#3};
+    % 本文（中央）
+    \node[inner sep=0pt, align=center] at (\cx, -\cy) {#4};
+  }
+
+  % ----- 各セルに内容を配置 -----
+  % 1行目
+  \placeCell{1}{1}{1}{\huge$\displaystyle\frac{122}{11}$}
+  \placeCell{2}{1}{2}{\huge$309,\,311$}
+  \placeCell{3}{1}{3}{\huge$5+\sqrt{10}$}
+
+  % 2行目
+  \placeCell{1}{2}{4}{\huge$2883$}
+  \placeCell{2}{2}{5}{\huge$2519$}
+  \placeCell{3}{2}{6}{\huge$\displaystyle\frac{14\sqrt{65}}{13}$}
+
+  % 3行目
+  \placeCell{1}{3}{7}{\huge$16\ \mathrm{個}$}
+  \placeCell{2}{3}{8}{\huge$2^{990}+1\ \mathrm{個}$}
+  \placeCell{3}{3}{9}{\huge$\displaystyle\frac{17}{3}$}
+
+  % 4行目
+  \placeCell{1}{4}{10}{\Large${}_{198}\mathrm{C}_{100}\cdot 3\cdot 2^{100}\ \mathrm{通り}$}
+  \placeCell{2}{4}{11}{\huge$102050$}
+  \placeCell{3}{4}{12}{\huge$\displaystyle\frac{2100^{210}}{2^{164}\cdot 3^{30}}\ \mathrm{個}$}
+
+　\def\smallW{35}      % 小箱の幅（mm）
+  \def\smallH{30}      % 小箱の高さ（mm）
+  \def\smallVsep{8}    % 第4行との垂直間隔（mm）
+
+  \pgfmathsetmacro{\rightX}{\leftX+\totalW}
+  % 小箱の左端 x 座標 = 右端 - 小箱幅（右端揃え）
+  \pgfmathsetmacro{\smallLeft}{\rightX - \smallW - 10}
+　% 第4行の上端 y（mm）：topY + 3*(cellH+rowGap)
+  \pgfmathsetmacro{\rowFourY}{\topY + 3*(\cellH + \rowGap)}
+  % 第4行の下端 y（mm） = rowFourY + cellH
+  \pgfmathsetmacro{\rowFourBottomY}{\rowFourY + \cellH}
+  % 小箱の上端 y（mm） = 第4行の下端 + smallVsep
+  \pgfmathsetmacro{\smallTopY}{\rowFourBottomY + \smallVsep}
+  % 小箱ヘッダ内中央
+　\pgfmathsetmacro{\smallcx}{0.5*(\smallLeft + \smallLeft + \smallW)}
+ \pgfmathsetmacro{\smallcy}{0.5*(\smallTopY + \smallTopY + 6)}
+ 
+  % 描画（右端揃えで第4行の下に配置）
+  \draw[line width=\outerLW pt] (\smallLeft, -\smallTopY) rectangle ++(\smallW, -\smallH);
+  \draw[line width=\innerLW pt] (\smallLeft, -\smallTopY-6) -- ++(\smallW,0); 
+  \node[font=\small] at (\smallcx, -\smallcy) {合計点};
+
+\end{tikzpicture}
+\end{document}
